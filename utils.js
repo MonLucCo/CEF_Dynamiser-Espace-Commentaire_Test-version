@@ -8,6 +8,8 @@ function updateDisplayErrorMessage() {
     const fieldsEmptyValue = isFieldEmpty('first-name') || isFieldEmpty('last-name') || isFieldEmpty('message');
 
     updateDisplayStyle(document.getElementById('error-message'), fieldsEmptyValue);
+
+    return fieldsEmptyValue;
 }
 
 function updateDisplayStyle (myElement, myState) {
@@ -18,4 +20,16 @@ function updateDisplayStyle (myElement, myState) {
     } else {
         elementStyle['display'] = 'none';
     }
+}
+
+// début des traitements
+let formElement = document.querySelector('form');
+
+formElement.onsubmit = function(event) {
+    // if (updateDisplayErrorMessage() === true) {
+    //     localStorage.setItem('displayErrorMessage', true);
+    // } else {
+    //     localStorage.setItem('displayErrorMessage', false);
+    // }
+    localStorage.setItem('displayErrorMessage', updateDisplayErrorMessage());
 }
