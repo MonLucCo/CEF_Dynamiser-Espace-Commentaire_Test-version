@@ -1,3 +1,5 @@
+// Déclaration des éléments utiles
+//
 function isFieldEmpty (nameFieldId) {
     let field = document.getElementById(nameFieldId);
 
@@ -7,29 +9,19 @@ function isFieldEmpty (nameFieldId) {
 function updateDisplayErrorMessage() {
     const fieldsEmptyValue = isFieldEmpty('first-name') || isFieldEmpty('last-name') || isFieldEmpty('message');
 
-    updateDisplayStyle(document.getElementById('error-message'), fieldsEmptyValue);
-
-    return fieldsEmptyValue;
+    return updateDisplayStyle(document.getElementById('error-message'), fieldsEmptyValue);
 }
 
 function updateDisplayStyle (myElement, myState) {
-    let elementStyle = myElement.style;
-
     if (myState === true) {
-        elementStyle['display'] = 'block';
+        myElement.style['display'] = 'block';
     } else {
-        elementStyle['display'] = 'none';
+        myElement.style['display'] = 'none';
     }
+    return myState;
 }
 
 // début des traitements
 let formElement = document.querySelector('form');
 
-formElement.onsubmit = function(event) {
-    // if (updateDisplayErrorMessage() === true) {
-    //     localStorage.setItem('displayErrorMessage', true);
-    // } else {
-    //     localStorage.setItem('displayErrorMessage', false);
-    // }
-    localStorage.setItem('displayErrorMessage', updateDisplayErrorMessage());
-}
+formElement.addEventListener('submit', updateDisplayErrorMessage, 'once');
