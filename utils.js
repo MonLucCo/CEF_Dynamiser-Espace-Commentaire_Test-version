@@ -21,18 +21,68 @@ function updateDisplayStyle (myElement, myState) {
     return myState;
 }
 
-function createChild(myParent, myLevel) {
-    let myModelElement = myParent.firstElementChild;
-    const myClassModelElement = myModelElement.classList;
+function createChildValue (index, myChildren, myLevel) {
 
-    console.log("C'est la classe de niveau (" + myLevel + ") : " + myClassModelElement);
-    console.log("C'est l'élément : n°" + myClassModelElement.children.childElementCount + " : " + myModelElement.tagName);
+    let myElement = myChildren[index];
+    // const myClassModelElement = myModelElement.classList;
+    let myCreateChildValue;
 
-    if (myClassModelElement.childElementCount > 0) {
-        createChild(myModelElement, myLevel + 1);
+    console.log("C'est au niveau (" + myLevel + ") l'élément n°" + index + " : " + myElement.tagName);
+
+    switch (myElement.tagName) {
+        case 'DIV':
+            console.log("Creation de la classe et du noeud 'div'")
+            let myCreatedChild = document.createElement('div');
+            myCreatedChild.appendChild(createChild(myElement, myLevel + 1));
+            myCreateChildValue = myCreatedChild;
+            break;
+        case 'H3':
+            console.log("Création du titre du commentaire (Nom + Prénom)");
+            let newTitleOfComment = document.createElement('h3');
+            const firstNameValue = document.getElementById('first-name').value;
+            const lastNameValue = document.getElementById('last-name').value;
+            let myTitleOfComment = document.createTextNode(firstNameValue + ' ' + lastNameValue);
+            newTitleOfComment.appendChild(myTitleOfComment);
+            myCreateChildValue =  newTitleOfComment;
+            break;
+        case 'P':
+            console.log("Création du message du commentaire");
+            let newContentOfComment = document.createElement('p');
+            let myContentMessage = document.getElementById('message').value;
+            let myContentOfComment = document.createTextNode(myContentMessage);
+            newContentOfComment.appendChild(myContentOfComment);
+            myCreateChildValue = newContentOfComment;
+            break;
+        default:
+            console.log("Autre cas : " + myElement.tagName);
+            // générer une erreur
+            break;
     }
     
-    return myModelElement;
+    console.log("Fin de l'élément n°" + index + " : " + myElement.tagName + " au niveau (" + myLevel + ")");   
+
+    return myCreateChildValue;
+}
+
+function createChild(myParent, myLevel) {
+
+    let myChildren = myParent.children;
+    const lengthOfChildrenModel = myChildren.length;     // Pour tracer la valeur - à enlever
+    let myCreateChild;
+
+    if (myLevel != 1) {
+        for (let index = 0; index < myChildren.length; index++) {
+            if (index > 0) {
+                myCreateChild.appendChild(createChildValue(index, myChildren, myLevel));
+            } else {
+                myCreateChild = createChildValue(index, myChildren, myLevel);
+            }    
+        }    
+    } else {
+        myCreateChild = createChildValue(0, myChildren, myLevel);
+    }
+    
+    return myCreateChild;
 }
 
 function createComment(idCommentList) {
@@ -42,7 +92,7 @@ function createComment(idCommentList) {
     // let newComment = document.createTextNode(newContent);
 
     // commentList.appendChild(newDiv);
-    createChild(commentList, 1);
+    commentList.appendChild(createChild(commentList, 1));
 }
 
 function addNewComment () {
