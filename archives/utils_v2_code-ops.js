@@ -20,7 +20,9 @@
 // Déclaration des fonctions utiles
 //
 
-function toEmptyAllFieldsById (myArrayOfId) {   
+function toEmptyAllFieldsById (myArrayOfId) {
+    // console.log('Effacement des données');                              // trace dans la console.log => Effacement des données
+    
     myArrayOfId.forEach(myId => {
         document.getElementById(myId).value = "";
     });
@@ -57,10 +59,10 @@ function addNewComment (event) {
         (document.getElementById('last-name').value === "") ||
         (document.getElementById('message').value === "")
         ) {
-        // Pas de nouveau commentaire (au moins un champ du formulaire est vide)
+        // console.log("Pas de nouveau commentaire");                              // trace dans la console.log => pas de nouveau commentaire
         document.getElementById('error-message').style['display'] = 'block';    // mettre le style "display : block" de l'ID "message-error"
     } else {
-        // Création d'un nouveau commentaire (tous les champs du formulaire sont remplis)
+        // console.log("Création d'un nouveau commentaire");                       // trace dans la console.log => création du commentaire
         document.getElementById('error-message').style['display'] = 'none';     // mettre le style "display : none" de l'ID "message-error"
         createNewCommentByClonedCommentById('comment-list');                    // créer le nouveau commentaire par clonage d'un commentaire
         toEmptyAllFieldsById(['first-name', 'last-name', 'message']);           // vider tous les champs du formulaire
