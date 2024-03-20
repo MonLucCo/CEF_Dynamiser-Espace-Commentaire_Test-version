@@ -2,31 +2,49 @@
 //
 // fonction 1 : addNewComment (event)
 //      - gestion de l'événement lors de la 'soumission' du formulaire
-//          + cas 1 : si formulaire incomplet
+//          + cas 1 : 'fonction 2' formulaire incomplet
 //              -> message d'avertissement à l'utilisateur
 //              -> fin événement 'soumission'
-//          + cas 2 : si formulaire complet
-//              -> appel 'fonction 2'
+//          + cas 2 : 'fonction 2' formulaire complet
 //              -> appel 'fonction 3'
+//              -> appel 'fonction 4'
 //              -> fin événement 'soumission'
-// fonction 2 : createNewCommentByClonedCommentById(myId)
+//
+// fonction 2 : isOneOfFieldsEmptyById (myArrayOfId) 
+//                  >> retourne 'vrai' si un des élément est vide
+//                  >> retourne 'faux' si tous les élémnts sont vides
+//      - pour chaque élément du formulaire, vérifier si vide
+//
+// fonction 3 : createNewCommentByClonedCommentById (myId)
 //      - création d'un nouveau commentaire
 //      - ajout du commentaire dans la page
 //
-// fonction 3 : toEmptyAllFieldsById (myArrayOfId)
+// fonction 4 : toEmptyAllFieldsById (myArrayOfId)
 //      - pour chaque élément du formulaire, vider le contenu
 //
 
 // Déclaration des fonctions utiles
 //
 
-function toEmptyAllFieldsById (myArrayOfId) {   
+function isOneOfFieldsEmptyById (myArrayOfId) {
+    let myResult = false;
+
+    myArrayOfId.forEach(myId => {
+        myResult = myResult || (document.getElementById(myId).value === "");
+    });
+    
+    return myResult;
+}
+
+function toEmptyAllFieldsById (myArrayOfId) {
+    // console.log('Effacement des données');                              // trace dans la console.log => Effacement des données
+    
     myArrayOfId.forEach(myId => {
         document.getElementById(myId).value = "";
     });
 }
 
-function createNewCommentByClonedCommentById(myId) {
+function createNewCommentByClonedCommentById (myId) {
     // création d'un nouveau commentaire par clonage du premier commentaire de la liste des commentaires
     const myCommentList = document.getElementById(myId);
     let newClonedComment= myCommentList.firstElementChild.cloneNode(true);
@@ -51,19 +69,20 @@ function addNewComment (event) {
     // empêcher l'événement par défaut de fonctionner (ici la soumission)
     event.preventDefault(); 
 
-    // traitement selon l'état du remplissage des champs du formulaire    
-    if (
-        (document.getElementById('first-name').value === "") ||
-        (document.getElementById('last-name').value === "") ||
-        (document.getElementById('message').value === "")
-        ) {
-        // Pas de nouveau commentaire (au moins un champ du formulaire est vide)
+    // identification des champs concernés du formulaire
+    const myFiedfsById = ['first-name', 'last-name', 'message'];
+
+    // calculer l'état du remplissage des champs du formulaire    
+    const statusOfFieldsFilling = isOneOfFieldsEmptyById(myFiedfsById);
+
+    if (statusOfFieldsFilling) {
+        // console.log("Pas de nouveau commentaire");                              // trace dans la console.log => pas de nouveau commentaire
         document.getElementById('error-message').style['display'] = 'block';    // mettre le style "display : block" de l'ID "message-error"
     } else {
-        // Création d'un nouveau commentaire (tous les champs du formulaire sont remplis)
+        // console.log("Création d'un nouveau commentaire");                       // trace dans la console.log => création du commentaire
         document.getElementById('error-message').style['display'] = 'none';     // mettre le style "display : none" de l'ID "message-error"
         createNewCommentByClonedCommentById('comment-list');                    // créer le nouveau commentaire par clonage d'un commentaire
-        toEmptyAllFieldsById(['first-name', 'last-name', 'message']);           // vider tous les champs du formulaire
+        toEmptyAllFieldsById(myFiedfsById);                                     // vider tous les champs du formulaire
     }      
 }
 
