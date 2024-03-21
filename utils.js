@@ -2,29 +2,19 @@
 //
 // fonction 1 : addNewComment (event)
 //      - gestion de l'événement lors de la 'soumission' du formulaire
-//          + cas 1 : si formulaire incomplet
+//          + cas 1 : si formulaire incomplet (avec traitement des espaces)
 //              -> message d'avertissement à l'utilisateur
 //              -> fin événement 'soumission'
-//          + cas 2 : si formulaire complet
+//          + cas 2 : si formulaire complet (avec traitement des espaces)
 //              -> appel 'fonction 2'
-//              -> appel 'fonction 3'
 //              -> fin événement 'soumission'
 // fonction 2 : createNewCommentByClonedCommentById(myId)
 //      - création d'un nouveau commentaire
 //      - ajout du commentaire dans la page
 //
-// fonction 3 : toEmptyAllFieldsById (myArrayOfId)
-//      - pour chaque élément du formulaire, vider le contenu
-//
 
 // Déclaration des fonctions utiles
 //
-
-function toEmptyAllFieldsById (myArrayOfId) {   
-    myArrayOfId.forEach(myId => {
-        document.getElementById(myId).value = "";
-    });
-}
 
 function createNewCommentByClonedCommentById(myId) {
     // création d'un nouveau commentaire par clonage du premier commentaire de la liste des commentaires
@@ -35,9 +25,9 @@ function createNewCommentByClonedCommentById(myId) {
     newClonedComment.firstElementChild.classList.add('border-t', 'border-gray-200');
 
     // récupération des données du formaulaire
-    const firstNameValue = document.getElementById('first-name').value;
-    const lastNameValue = document.getElementById('last-name').value;
-    const messageValue = document.getElementById('message').value;
+    const firstNameValue = document.getElementById('first-name').value.trim();  // traitement des espaces
+    const lastNameValue = document.getElementById('last-name').value.trim();    // traitement des espaces
+    const messageValue = document.getElementById('message').value.trim();       // traitement des espaces
     
     // modifier dans le clone le titre et le message
     newClonedComment.querySelector('h3').textContent = firstNameValue + ' ' + lastNameValue;
@@ -51,11 +41,11 @@ function addNewComment (event) {
     // empêcher l'événement par défaut de fonctionner (ici la soumission)
     event.preventDefault(); 
 
-    // traitement selon l'état du remplissage des champs du formulaire    
+    // traitement selon l'état du remplissage des champs du formulaire (avec traitement des espaces)
     if (
-        (document.getElementById('first-name').value === "") ||
-        (document.getElementById('last-name').value === "") ||
-        (document.getElementById('message').value === "")
+        ( !document.getElementById('first-name').value.trim() ) ||
+        ( !document.getElementById('last-name').value.trim() ) ||
+        ( !document.getElementById('message').value.trim() )
         ) {
         // Pas de nouveau commentaire (au moins un champ du formulaire est vide)
         document.getElementById('error-message').style['display'] = 'block';    // mettre le style "display : block" de l'ID "message-error"
@@ -63,11 +53,11 @@ function addNewComment (event) {
         // Création d'un nouveau commentaire (tous les champs du formulaire sont remplis)
         document.getElementById('error-message').style['display'] = 'none';     // mettre le style "display : none" de l'ID "message-error"
         createNewCommentByClonedCommentById('comment-list');                    // créer le nouveau commentaire par clonage d'un commentaire
-        toEmptyAllFieldsById(['first-name', 'last-name', 'message']);           // vider tous les champs du formulaire
+        document.querySelector('form').reset();                                 // vider tous les champs du formulaire - réinitialisation
     }      
 }
 
 // début des traitements
-let formElement = document.querySelector('form');
+//
 
-formElement.addEventListener('submit', addNewComment, 'once');
+document.querySelector('form').addEventListener('submit', addNewComment);
