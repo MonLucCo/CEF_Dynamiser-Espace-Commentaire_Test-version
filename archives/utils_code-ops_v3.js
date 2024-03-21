@@ -2,19 +2,36 @@
 //
 // fonction 1 : addNewComment (event)
 //      - gestion de l'événement lors de la 'soumission' du formulaire
-//          + cas 1 : si formulaire incomplet (avec traitement des espaces)
+//          + cas 1 : si formulaire incomplet (avec 'fonction 3' pour traitement des espaces)
 //              -> message d'avertissement à l'utilisateur
 //              -> fin événement 'soumission'
-//          + cas 2 : si formulaire complet (avec traitement des espaces)
+//          + cas 2 : si formulaire complet (avec 'fonction 3' pour traitement des espaces)
 //              -> appel 'fonction 2'
 //              -> fin événement 'soumission'
 // fonction 2 : createNewCommentByClonedCommentById(myId)
 //      - création d'un nouveau commentaire
 //      - ajout du commentaire dans la page
 //
+// fonction 3 : myTrim(myString)
+//      - pour supprimer les espaces en début et fin de chaîne 'text'
+//
 
 // Déclaration des fonctions utiles
 //
+
+function myTrim(myString) 
+{ 
+    // Expression rationnelle (Regular expression) : https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Regular_expressions
+    // Signification de l'expression /(^\s*)|(\s*$)/g :
+    // expression rationnelle entre / --- /, avec mémoire pour ( --- ), avec ou l'un ou l'autre pour |, pour toute la chaîne avec / /g
+    // signification de (^\s*) espace(s) en début de chaîne : avec ^ pour début, avec \s pour l'espace, avec * pour répétition 0 ou n fois
+    // signification de (\s*$) espace(s) en fin de chaîne : avec \s pour l'espace, * pour répétion 0 ou n fois, avec $ pour fin de chaîne
+    
+    // console.log("Traitement du texte : '" + string + "' en '" + string.replace(/(^\s*)|(\s*$)/g,'') + "'");
+
+    // retourne la chaîne sans les espaces en début et en fin de chaîne
+    return myString.replace(/(^\s*)|(\s*$)/g,''); 
+} 
 
 function createNewCommentByClonedCommentById(myId) {
     // création d'un nouveau commentaire par clonage du premier commentaire de la liste des commentaires
@@ -25,9 +42,9 @@ function createNewCommentByClonedCommentById(myId) {
     newClonedComment.firstElementChild.classList.add('border-t', 'border-gray-200');
 
     // récupération des données du formaulaire
-    const firstNameValue = document.getElementById('first-name').value.trim();  // traitement des espaces
-    const lastNameValue = document.getElementById('last-name').value.trim();    // traitement des espaces
-    const messageValue = document.getElementById('message').value.trim();       // traitement des espaces
+    const firstNameValue = myTrim(document.getElementById('first-name').value);     // traitement des espaces
+    const lastNameValue = myTrim(document.getElementById('last-name').value);       // traitement des espaces
+    const messageValue = mytrim(document.getElementById('message').value);          // traitement des espaces
     
     // modifier dans le clone le titre et le message
     newClonedComment.querySelector('h3').textContent = firstNameValue + ' ' + lastNameValue;
@@ -41,11 +58,11 @@ function addNewComment (event) {
     // empêcher l'événement par défaut de fonctionner (ici la soumission)
     event.preventDefault(); 
 
-    // traitement selon l'état du remplissage des champs du formulaire (avec traitement des espaces)
+    // traitement selon l'état du remplissage des champs du formulaire (avec traitement des spaces)
     if (
-        ( !document.getElementById('first-name').value.trim() ) ||
-        ( !document.getElementById('last-name').value.trim() ) ||
-        ( !document.getElementById('message').value.trim() )
+        ( !trim( document.getElementById('first-name').value ) ) ||
+        ( !trim( document.getElementById('last-name').value ) ) ||
+        ( !trim( document.getElementById('message').value ) )
         ) {
         // Pas de nouveau commentaire (au moins un champ du formulaire est vide)
         document.getElementById('error-message').style['display'] = 'block';    // mettre le style "display : block" de l'ID "message-error"
@@ -58,6 +75,6 @@ function addNewComment (event) {
 }
 
 // début des traitements
-//
+let formElement = document.querySelector('form');
 
-document.querySelector('form').addEventListener('submit', addNewComment);
+formElement.addEventListener('submit', addNewComment);
